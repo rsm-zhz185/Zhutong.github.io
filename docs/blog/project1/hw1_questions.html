@@ -461,7 +461,7 @@ Variable Definitions
 <section id="balance-test" class="level3">
 <h3 class="anchored" data-anchor-id="balance-test">Balance Test</h3>
 <p>As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.</p>
-<div id="9f729821" class="cell" data-execution_count="1">
+<div id="40cd3c8e" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -520,7 +520,7 @@ Variable Definitions
 <h3 class="anchored" data-anchor-id="charitable-contribution-made">Charitable Contribution Made</h3>
 <p>First, I analyze whether matched donations lead to an increased response rate of making a donation.</p>
 <p>The figure below shows the proportion of individuals who made a donation, comparing those in the treatment group (who received a matching offer) versus the control group.</p>
-<div id="1137bcde" class="cell" data-execution_count="2">
+<div id="7497a04f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span>  pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -550,7 +550,7 @@ Variable Definitions
 </div>
 <p>To statistically assess whether matched donations increase the likelihood of giving, I ran a t-test comparing the proportion of individuals who donated in the treatment and control groups. The test reveals a significant difference (t = 3.10, p = 0.0019), indicating that individuals who received a matching offer were more likely to contribute.</p>
 <p>To confirm this result, I also ran a bivariate linear regression where the dependent variable is whether the individual donated (<code>gave</code>), and the independent variable is treatment assignment. The estimated coefficient on <code>treatment</code> is approximately 0.004, meaning that being in the treatment group increases the probability of giving by about 0.4 percentage points. This result is statistically significant at the 1% level.</p>
-<div id="032da3c9" class="cell" data-execution_count="3">
+<div id="4e1a5654" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span>  pd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_ind</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -568,16 +568,26 @@ Variable Definitions
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>reg_model <span class="op">=</span> smf.ols(<span class="st">'gave ~ treatment'</span>, data<span class="op">=</span>df).fit()</span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>reg_summary <span class="op">=</span> reg_model.summary()</span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>t_stat, p_val, reg_summary.tables[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>(3.101361000543946,
- 0.0019274025949016986,
- &lt;class 'statsmodels.iolib.table.SimpleTable'&gt;)</code></pre>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>t_stat, p_val, reg_summary.tables[<span class="dv">1</span>]</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> reg_model.params[<span class="st">"treatment"</span>]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>se <span class="op">=</span> reg_model.bse[<span class="st">"treatment"</span>]</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>tval <span class="op">=</span> reg_model.tvalues[<span class="st">"treatment"</span>]</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>pval <span class="op">=</span> reg_model.pvalues[<span class="st">"treatment"</span>]</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">| Variable  | Coef.   | Std. Err | t-stat | p-value |"</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"|-----------|---------|----------|--------|---------|"</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"| Treatment | </span><span class="sc">{</span>coef<span class="sc">:.4f}</span><span class="ss"> | </span><span class="sc">{</span>se<span class="sc">:.4f}</span><span class="ss">   | </span><span class="sc">{</span>tval<span class="sc">:.3f}</span><span class="ss">  | </span><span class="sc">{</span>pval<span class="sc">:.4f}</span><span class="ss">  |"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+| Variable  | Coef.   | Std. Err | t-stat | p-value |
+|-----------|---------|----------|--------|---------|
+| Treatment | 0.0042 | 0.0013   | 3.101  | 0.0019  |</code></pre>
 </div>
 </div>
 <p>These findings suggest that even small psychological incentives—like knowing your donation will be matched—can motivate action. Humans are responsive not only to absolute costs and benefits, but also to social cues and perceived multipliers of their impact.</p>
-<p>To replicate Table 3, column (1) from the original paper, I estimated a probit regression model where the outcome variable is whether a charitable donation was made, and the explanatory variable is treatment assignment. The coefficient on the treatment indicator is <strong>0.197</strong>, statistically significant at the 1% level (p = 0.002). This suggests that being offered a matching grant increases the probability of donation in a statistically significant way, consistent with the authors’ original finding.</p>
-<div id="0ee1887a" class="cell" data-execution_count="4">
+<p>To replicate Table 3, column (1) from the original paper, I estimated a probit regression model where the outcome variable is whether a charitable donation was made, and the explanatory variable is treatment assignment. The coefficient on the treatment indicator is <strong>0.0868</strong>, statistically significant at the 1% level (p = 0.002). This suggests that being offered a matching grant increases the probability of donation in a statistically significant way, consistent with the authors’ original finding.</p>
+<div id="9ac295af" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -634,7 +644,7 @@ Variable Definitions
 <section id="differences-between-match-rates" class="level3">
 <h3 class="anchored" data-anchor-id="differences-between-match-rates">Differences between Match Rates</h3>
 <p>Next, I assess the effectiveness of different sizes of matched donations on the response rate.</p>
-<div id="a5c55342" class="cell" data-execution_count="5">
+<div id="55c7787e" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_ind</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -676,7 +686,7 @@ Variable Definitions
 <p>To complement the earlier t-test analysis, I ran two regression models to estimate the impact of different match ratios on the probability of donation. In the first model, I created dummy variables for 2:1 and 3:1 ratios, using 1:1 as the baseline. In the second model, I used the categorical match ratio variable directly.Both regressions show that the coefficients for 2:1 and 3:1 match ratios are <strong>positive but small and not statistically significant</strong> (p-values ≈ 0.31–0.34). This confirms the earlier result: <strong>increasing the generosity of the match ratio does not meaningfully increase the probability of donation</strong>.</p>
 <p>These results reinforce the idea that it is the presence of a match—not its size—that matters most to potential donors.</p>
 <p>To complement the t-tests, I assessed the effect of different match ratios on donation probability using regression analysis. First, I created dummy variables for each match ratio:</p>
-<div id="7cb4c183" class="cell" data-execution_count="6">
+<div id="eb0ea66a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -720,7 +730,7 @@ Variable Definitions
 </div>
 <p>more generous match ratios (2:1, 3:1) do not significantly increase donation rates compared to a standard 1:1 match.</p>
 <p>To quantify the differences in effectiveness across match ratios, I compared response rates (i.e., donation probability) between 1:1, 2:1, and 3:1 match conditions</p>
-<div id="80cf1b55" class="cell" data-execution_count="7">
+<div id="7e2a2d82" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-import necessary libraries after kernel reset</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -774,7 +784,7 @@ Variable Definitions
 <section id="size-of-charitable-contribution" class="level3">
 <h3 class="anchored" data-anchor-id="size-of-charitable-contribution">Size of Charitable Contribution</h3>
 <p>In this subsection, I analyze the effect of the size of matched donation on the size of the charitable contribution.</p>
-<div id="124cef0b" class="cell" data-execution_count="8">
+<div id="175e9187" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_ind</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -811,7 +821,7 @@ Variable Definitions
 <p>A t-test finds that individuals in the treatment group gave, on average, <strong>$0.15 more</strong> than those in the control group, but this difference is <strong>not statistically significant at the 5% level</strong> (p ≈ 0.063). A simple bivariate regression of donation amount on treatment status yields the same estimate and confirms the same level of weak significance.</p>
 <p>These results suggest that <strong>the presence of a match may slightly increase how much people give</strong>, but the effect is small and not strongly statistically supported.</p>
 <p>To further explore the impact of matched donations, I re-ran the analysis on only those individuals who made a donation. This allows us to assess whether the treatment influences <strong>how much</strong> people give, conditional on deciding to donate.</p>
-<div id="d376a3fe" class="cell" data-execution_count="9">
+<div id="ee4bcfb2" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_ind</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -850,7 +860,7 @@ Variable Definitions
 <p>Importantly, the coefficient on treatment <strong>does not have a causal interpretation</strong> in this context, because we are conditioning on a post-treatment variable (whether a donation was made). This introduces selection bias. The treatment may have influenced both the likelihood of giving and the type of person who decides to give, thus confounding this estimate.</p>
 <p>Interpretation This analysis shows that matched donations do not increase the size of contributions among those who donate. If anything, the treatment group gives slightly less, though the difference is small and statistically insignificant.</p>
 <p>The plots:</p>
-<div id="7600a90f" class="cell" data-execution_count="10">
+<div id="9b6a6bc6" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -905,7 +915,7 @@ Variable Definitions
 <p>Further suppose that the true distribution of respondents who do get a charitable donation match of any size is Bernoulli with probability p=0.022 that a donation is made.</p>
 <section id="law-of-large-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="law-of-large-numbers">Law of Large Numbers</h3>
-<div id="77c408a3" class="cell" data-execution_count="11">
+<div id="2f3c2688" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -967,7 +977,7 @@ Variable Definitions
 <li>The <strong>true difference in means (0.004)</strong> becomes more distinguishable as sample size increases.</li>
 </ul>
 <p>Importantly, for small samples (e.g., n = 50), <strong>zero lies well within the distribution</strong>, suggesting we might fail to detect a difference. But for large samples, <strong>zero is pushed toward the tail</strong>, indicating a statistically detectable difference. This is the essence of the Central Limit Theorem in practice.</p>
-<div id="09d3378c" class="cell" data-execution_count="12">
+<div id="7fd90356" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters</span></span>
