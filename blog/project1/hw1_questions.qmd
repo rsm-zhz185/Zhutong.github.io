@@ -198,13 +198,23 @@ reg_model = smf.ols('gave ~ treatment', data=df).fit()
 reg_summary = reg_model.summary()
 
 t_stat, p_val, reg_summary.tables[1]
+
+coef = reg_model.params["treatment"]
+se = reg_model.bse["treatment"]
+tval = reg_model.tvalues["treatment"]
+pval = reg_model.pvalues["treatment"]
+
+print("\n| Variable  | Coef.   | Std. Err | t-stat | p-value |")
+print("|-----------|---------|----------|--------|---------|")
+print(f"| Treatment | {coef:.4f} | {se:.4f}   | {tval:.3f}  | {pval:.4f}  |")
+
 ```
 
 These findings suggest that even small psychological incentives—like knowing your donation will be matched—can motivate action. Humans are responsive not only to absolute costs and benefits, but also to social cues and perceived multipliers of their impact.
 
 
 
-To replicate Table 3, column (1) from the original paper, I estimated a probit regression model where the outcome variable is whether a charitable donation was made, and the explanatory variable is treatment assignment. The coefficient on the treatment indicator is **0.197**, statistically significant at the 1% level (p = 0.002). This suggests that being offered a matching grant increases the probability of donation in a statistically significant way, consistent with the authors' original finding.
+To replicate Table 3, column (1) from the original paper, I estimated a probit regression model where the outcome variable is whether a charitable donation was made, and the explanatory variable is treatment assignment. The coefficient on the treatment indicator is **0.868**, statistically significant at the 1% level (p = 0.002). This suggests that being offered a matching grant increases the probability of donation in a statistically significant way, consistent with the authors' original finding.
 ```{python}
 import pandas as pd
 import statsmodels.api as sm
