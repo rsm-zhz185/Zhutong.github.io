@@ -7,5 +7,11 @@
   },
   "blog.qmd": {
     "blog.html": "7878be0f"
+  },
+  "blog/project1/hw1_questions.qmd": {
+    "hw1_questions.html": "4abee427"
+  },
+  "hw1_questions (1).qmd": {
+    "hw1_questions (1).html": "38ea5a08"
   }
 }
