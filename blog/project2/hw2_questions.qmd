@@ -430,7 +430,7 @@ df_model["residuals"] = df_model["number_of_reviews"] - df_model["predicted_revi
 
 plt.figure(figsize=(8, 5))
 sns.scatterplot(x="predicted_reviews", y="number_of_reviews", data=df_model, alpha=0.3)
-plt.plot([0, 600], [0, 600], '--', color="gray")  # 参考线
+plt.plot([0, 600], [0, 600], '--', color="gray")
 plt.xlabel("Predicted Number of Reviews")
 plt.ylabel("Actual Number of Reviews")
 plt.title("Predicted vs Actual Reviews")
