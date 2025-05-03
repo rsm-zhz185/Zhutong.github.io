@@ -190,6 +190,7 @@ window.Quarto = {
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
   <li><a href="#estimation-of-simple-poisson-model" id="toc-estimation-of-simple-poisson-model" class="nav-link" data-scroll-target="#estimation-of-simple-poisson-model">Estimation of Simple Poisson Model</a></li>
   <li><a href="#estimation-of-poisson-regression-model" id="toc-estimation-of-poisson-regression-model" class="nav-link" data-scroll-target="#estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</a></li>
+  <li><a href="#table-of-coefficients-and-standard-errors" id="toc-table-of-coefficients-and-standard-errors" class="nav-link" data-scroll-target="#table-of-coefficients-and-standard-errors">table of coefficients and standard errors:</a></li>
   </ul></li>
   <li><a href="#airbnb-case-study" id="toc-airbnb-case-study" class="nav-link" data-scroll-target="#airbnb-case-study">AirBnB Case Study</a>
   <ul class="collapse">
@@ -241,7 +242,7 @@ window.Quarto = {
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<div id="d561ca45" class="cell" data-execution_count="1">
+<div id="a6ebebd2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Blueprinty customer data</span></span>
@@ -273,7 +274,7 @@ memory usage: 47.0+ KB</code></pre>
 </div>
 </div>
 <p>Customers of Blueprinty tend to have a slightly higher number of patents than non-customers. The mean number of patents for non-customers is <strong>3.47</strong>, while for customers it is <strong>4.13</strong>. The histogram confirms this difference: while both groups are centered around 2 to 5 patents, Blueprinty customers are skewed slightly toward higher patent counts. This suggests a potential relationship worth modeling, though further analysis is needed to control for other factors such as firm age and region.</p>
-<div id="c8f72e58" class="cell" data-execution_count="2">
+<div id="2e1a4426" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -313,7 +314,7 @@ Name: patents, dtype: float64</code></pre>
 </div>
 </div>
 <p>Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.</p>
-<div id="d73a0595" class="cell" data-execution_count="3">
+<div id="bd28bb90" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -387,18 +388,17 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 \log L(\boldsymbol{\beta}) = \sum_{i=1}^{n} \left( -e^{\mathbf{x}_i^\top \boldsymbol{\beta}} + Y_i \cdot \mathbf{x}_i^\top \boldsymbol{\beta} - \log(Y_i!) \right)
 \]</span></p>
 <p>This is the function I maximize in order to estimate the parameters via MLE.</p>
-<div id="3f9849d3" class="cell" data-execution_count="4">
+<div id="9dbb0fc3" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义 log-likelihood 函数（不含 beta，直接用 lambda 和 Y）</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_log_likelihood(y, lam):</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute the log-likelihood of Poisson model given y and lambda."""</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(y <span class="op">*</span> np.log(lam) <span class="op">-</span> lam <span class="op">-</span> np.log(np.math.factorial(y)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_log_likelihood(y, lam):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute the log-likelihood of Poisson model given y and lambda."""</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(y <span class="op">*</span> np.log(lam) <span class="op">-</span> lam <span class="op">-</span> np.log(np.math.factorial(y)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>I define a function that computes the log-likelihood of the Poisson model given a vector of observed outcomes 𝑌 and a corresponding vector of predicted means λ. This function will serve as the core of our MLE implementation.</p>
 <hr>
 <p>We use the observed number of patents to evaluate the Poisson log-likelihood for a range of values of λ. The plot shows a clear maximum near the empirical mean of the data. This peak corresponds to the maximum likelihood estimate (MLE) of λ in a model with no covariates, i.e., a constant rate model.</p>
-<div id="699920a0" class="cell" data-execution_count="5">
+<div id="dc346b8a" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -432,7 +432,7 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 </div>
 </div>
 <p>I used maximum likelihood estimation to fit a Poisson regression model with a binary predictor. The model was estimated using scipy.optimize.minimize() and the BFGS algorithm. The estimated coefficients suggest that Blueprinty customers have a higher expected patent rate than non-customers, though the optimizer did not fully converge (success=False), which may indicate a need for better starting values or tighter optimization criteria.</p>
-<div id="1e67ff6a" class="cell" data-execution_count="6">
+<div id="cb5a0709" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.special <span class="im">as</span> sp</span>
@@ -466,9 +466,9 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 </section>
 <section id="estimation-of-poisson-regression-model" class="level3">
 <h3 class="anchored" data-anchor-id="estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</h3>
-<p>Next, we extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
+<p>Next, I extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
 <p>Update:</p>
-<div id="7c9cacf1" class="cell" data-execution_count="7">
+<div id="74f329e4" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.special <span class="im">as</span> sp</span>
@@ -494,8 +494,10 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 <span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    lam <span class="op">=</span> np.exp(X <span class="op">@</span> beta)</span>
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>np.<span class="bu">sum</span>(y <span class="op">*</span> np.log(lam) <span class="op">-</span> lam <span class="op">-</span> sp.gammaln(y <span class="op">+</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><em>todo: Use your function along with R’s optim() or Python’s sp.optimize() to find the MLE vector and the Hessian of the Poisson model with covariates. Specifically, the first column of X should be all 1’s to enable a constant term in the model, and the subsequent columns should be age, age squared, binary variables for all but one of the regions, and the binary customer variable. Use the Hessian to find standard errors of the beta parameter estimates and present a table of coefficients and standard errors.</em></p>
-<div id="eec74221" class="cell" data-execution_count="8">
+</section>
+<section id="table-of-coefficients-and-standard-errors" class="level3">
+<h3 class="anchored" data-anchor-id="table-of-coefficients-and-standard-errors">table of coefficients and standard errors:</h3>
+<div id="2fc86a27" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.special <span class="im">as</span> sp</span>
@@ -598,7 +600,7 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 </div>
 </div>
 <p>I confirm the validity of our hand-coded Poisson MLE model by comparing it to the output of statsmodels.GLM() with a Poisson family. The coefficient estimates and standard errors are identical, confirming the correctness of our implementation. In particular, the iscustomer coefficient remains positive and statistically significant, supporting the conclusion that Blueprinty customers tend to receive more patents.</p>
-<div id="77ac59a1" class="cell" data-execution_count="9">
+<div id="414199a3" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -719,7 +721,7 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 </div>
 </div>
 <p>The Poisson regression results suggest that Blueprinty’s software is associated with increased patenting success. Specifically, the coefficient on the iscustomer variable is positive and statistically significant, indicating that, all else equal, firms using Blueprinty’s tools tend to receive more patents than non-customers. Because the model uses a log link, the effect is multiplicative: being a customer is associated with approximately 23% more patents on average, as exp(0.208)≈1.23. Additionally, the model reveals a nonlinear relationship between firm age and patent output—both age_std and age_squared_std are negative and significant, implying that mid-aged firms tend to file more patents than either very young or very old firms. The region variable (region_Northeast) is not statistically significant, suggesting no notable difference in patent activity for firms in the Northeast relative to the base region. Overall, the model supports the hypothesis that using Blueprinty’s software is linked to higher patenting activity, though as with any observational analysis, this result should be interpreted with caution due to potential omitted variable bias.</p>
-<div id="822384ee" class="cell" data-execution_count="10">
+<div id="a9b1ec1e" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -762,7 +764,7 @@ L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{Y_i}}{Y_
 <pre><code>0.7927680710453339</code></pre>
 </div>
 </div>
-<p>To better interpret the effect of Blueprinty’s software, we simulated a counterfactual experiment using our fitted Poisson regression model. We created two hypothetical datasets: one in which all firms are treated as non-customers (iscustomer = 0), and another where all firms are treated as customers (iscustomer = 1). We then computed predicted patent counts under both scenarios. The average difference between the two predictions was 0.79 patents per firm, suggesting that Blueprinty’s software is associated with nearly one additional patent per firm on average.</p>
+<p>To better interpret the effect of Blueprinty’s software, I simulated a counterfactual experiment using our fitted Poisson regression model. I created two hypothetical datasets: one in which all firms are treated as non-customers (iscustomer = 0), and another where all firms are treated as customers (iscustomer = 1). Then computed predicted patent counts under both scenarios. The average difference between the two predictions was 0.79 patents per firm, suggesting that Blueprinty’s software is associated with nearly one additional patent per firm on average.</p>
 </section>
 </section>
 <section id="airbnb-case-study" class="level2">
@@ -798,7 +800,7 @@ Variable Definitions
 </div>
 </div>
 </div>
-<div id="e4512572" class="cell" data-execution_count="11">
+<div id="84a2727c" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -843,7 +845,7 @@ Variable Definitions
 <span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span><span class="st">"predicted_reviews"</span>, y<span class="op">=</span><span class="st">"number_of_reviews"</span>, data<span class="op">=</span>df_model, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">600</span>], [<span class="dv">0</span>, <span class="dv">600</span>], <span class="st">'--'</span>, color<span class="op">=</span><span class="st">"gray"</span>)  <span class="co"># 参考线</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">600</span>], [<span class="dv">0</span>, <span class="dv">600</span>], <span class="st">'--'</span>, color<span class="op">=</span><span class="st">"gray"</span>)</span>
 <span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Predicted Number of Reviews"</span>)</span>
 <span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Actual Number of Reviews"</span>)</span>
 <span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Predicted vs Actual Reviews"</span>)</span>
@@ -855,7 +857,7 @@ Variable Definitions
 <span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>glm_airbnb_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/kr/2yppgsz96hz36454plvx38_00000gn/T/ipykernel_36869/893198231.py:39: SettingWithCopyWarning:
+<pre><code>/var/folders/kr/2yppgsz96hz36454plvx38_00000gn/T/ipykernel_39185/3501965870.py:39: SettingWithCopyWarning:
 
 
 A value is trying to be set on a copy of a slice from a DataFrame.
@@ -863,7 +865,7 @@ Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
 
-/var/folders/kr/2yppgsz96hz36454plvx38_00000gn/T/ipykernel_36869/893198231.py:40: SettingWithCopyWarning:
+/var/folders/kr/2yppgsz96hz36454plvx38_00000gn/T/ipykernel_39185/3501965870.py:40: SettingWithCopyWarning:
 
 
 A value is trying to be set on a copy of a slice from a DataFrame.
