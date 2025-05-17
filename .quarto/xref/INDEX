@@ -16,5 +16,9 @@
   },
   "blog/project2/hw2_questions.qmd": {
     "hw2_questions.html": "5dff1eec"
+  },
+  "blog/project3/hw3_questions.qmd": {
+    "hw3_questions.html": "bc797c16",
+    "hw3_questions.tex": "311f2290"
   }
 }
